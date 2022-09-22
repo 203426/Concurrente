@@ -23,7 +23,7 @@ def get_api():
         name=  result[0].get('name').get('first')
         return name
     else: 
-        return 'Dato no obtenido'
+        return 'Mala obtención del dato'
 
 def insert_in_db(conn,dato):
     try:
@@ -36,8 +36,12 @@ def insert_in_db(conn,dato):
         conn.commit()
 
 def connect_db():
-    conn = psycopg2.connect(dbname="concurrente", user="postgres", password="steven", host="localhost", port="5432") #psycopg2.connect("dbname=concurrente user=postgres password=steven@555")
-    #cur = conn.cursor()
+    try:
+        conn = psycopg2.connect(dbname="concurrente", user="postgres", password="steven", host="localhost", port="5432") #psycopg2.connect("dbname=concurrente user=postgres password=steven@555")
+        #cur = conn.cursor()
+        print('Base de datos conectada')
+    except Exception as err:
+        print('Error al conecta a la base de datos')
     return conn
 
 def download_video(dato,link):
