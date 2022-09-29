@@ -1,5 +1,4 @@
 import random
-from re import A
 import threading
 import time
 
@@ -14,26 +13,35 @@ class Person:
     def getAll(self):
         return f"[sticks: {self.stick} ,number: {self.number} ,full: {self.full}]"
 
-def eating(person):
+def eating(person,index,people):
+    rPerson=people[index]
+    if rPerson==8:
+        rPerson=0
+
     mutex.acquire()
-    person.stick=2
-    print(f'------------Person {person.number} eating NOW with chopsticks------------')
-    print(f'|\tInitial data:{person.getAll()}  |')
-    time.sleep(3)
-    person.stick=1
-    person.full=True
-    print(f'|\t\t***Person {person.number} just finished eating***\t  |')
-    print(f'|\t  Final Data:{person.getAll()}   |')
-    print('-----------------------------------------------------------')
-    mutex.release()
+    if person.stick==1 and rPerson.stick==1:
+        person.stick=2
+        rPerson.stick=0
+        print(f'------------Person {person.number} eating NOW with chopsticks------------')
+        print(f'|\tInitial data:{person.getAll()}  |')
+        time.sleep(3)
+        person.stick=1
+        person.full=True
+        rPerson.stick=1
+        print(f'|\t\t***Person {person.number} just finished eating***\t  |')
+        print(f'|\t  Final Data:{person.getAll()}   |')
+        print('-----------------------------------------------------------')
+        mutex.release()
     
 
 
 def table(people):
+    index=0
     for person in people:
-        personEating=threading.Thread(target=eating, args=[person])
+        personEating=threading.Thread(target=eating, args=[person,index,people])
         print(f'Person {person.number} ready to eat (waiting for chopsticks)......')
         personEating.start()
+        index+=1
 
 
 
